@@ -1,0 +1,163 @@
+//@import "./styles/global/svg";
+
+$m: .5rem;
+$light: #d9d9d9;
+$grey: #666;
+$border: 1px solid $grey;
+
+*{
+  box-sizing: border-box;
+}
+
+body{
+	margin: 0;
+	padding: 0;
+	font-size: 16px;
+	font-family: sans-serif;
+	color: #222;
+}
+
+a{
+	color: #222;
+}
+
+/**/
+
+h1, h2, h3, h4, h5, h6{
+	font-size: 14px;
+	margin: 0 0 $m;
+	padding: 0;
+}
+
+input, button, textarea, select{
+	padding: $m;
+	font-size: 16px;
+	border: $border;
+}
+textarea{
+	overflow: auto;
+	resize: none;
+}
+textarea, pre {
+    tab-size : 2;
+}
+button{
+	padding: $m $m*2;
+	border-radius: $m/2;
+}
+
+/**/
+
+header, .window, .importer, .editor, .exporter{
+	position: absolute;
+	display: flex;
+	flex-direction: column;
+}
+
+header{
+	height: $m*3;
+	width: 100%;
+	background: $light;
+	border-bottom: $border;
+}
+
+.window{
+	top: $m*3;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	background: $light;
+}
+
+.importer{
+	width: 25%;
+	height: 100%;
+
+	.file{
+		.form{
+			display: flex;
+			align-items: center;
+
+			input{
+				width: 100%;
+				border-right: none;
+			}
+			button{
+				border-radius: 0 $m/2 $m/2 0;
+			}
+		}
+	}
+
+	.monitor{
+		background: white;
+		overflow: hidden;
+		overflow-y: auto;
+
+		.msg{
+			font-size: 13px;
+			padding: $m/2 $m/2 $m;
+			word-break: break-word;
+
+			&.ok{
+				color: #73b904;
+			}
+			&.error{
+				color: red;
+			}
+			&.warn{
+				color: #d29422;
+			}
+			&.hr{
+				padding: 0;
+				border-bottom: 1px solid #d9d9d9;
+				margin: $m 0;
+			}
+		}
+	}
+
+	.status{
+		padding: $m;
+		border-top: $border;
+	}
+}
+.editor{
+	left: 25%;
+	width: 50%;
+	height: 100%;
+	border-left: $border;
+	border-right: $border;
+
+	.canvas{
+		margin: $m;
+		position: relative;
+
+		textarea{
+			position: absolute;
+			width: 100%;
+			height: 100%;
+		}
+	}
+}
+.exporter{
+	left: 75%;
+	width: 25%;
+	height: 100%;
+
+	.actions{
+		padding: $m;
+		border-top: $border;
+	}
+}
+
+.box{
+	margin: $m $m 0;
+	padding: $m;
+	border: $border;
+
+	&.last{
+		margin-bottom: $m;
+	}
+}
+.fill{
+	flex-grow: 1;
+}

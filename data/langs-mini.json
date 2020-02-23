@@ -1,0 +1,45 @@
+{
+	"680":{
+	"name": "French",
+	"nombre": "",
+	"speakers": "",
+	"wikidata": "",
+	"wals": "fre",
+	"iso-639-3": "fra",
+	"genus": "Romance",
+	"family": "Indo-European",
+	"area": "Eurasia",
+	"lat": 48,
+	"lon": 2,
+	"countries": "France",
+	"__0": "Switzerland"
+	},
+	"2185":{
+	"name": "Spanish",
+	"nombre": "",
+	"speakers": "",
+	"wikidata": "",
+	"wals": "spa",
+	"iso-639-3": "spa",
+	"genus": "Romance",
+	"family": "Indo-European",
+	"area": "Eurasia",
+	"lat": 40,
+	"lon": -4,
+	"countries": "Spain"
+	},
+	"2188":{
+	"name": "Spokane",
+	"nombre": "",
+	"speakers": "",
+	"wikidata": "",
+	"wals": "spo",
+	"iso-639-3": "spo",
+	"genus": "Interior Salish",
+	"family": "Salishan",
+	"area": "North America",
+	"lat": 47.67,
+	"lon": -117.75,
+	"countries": "United States"
+	}
+}

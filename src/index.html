@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Wikidata importer</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="Description" content="D3.js force layout with human languages data">
+
+  <!-- Open Graph data / Facebook Card data -->
+  <meta property="og:title" content="Interactive visualization of human languages">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="http://www.alotropico.com/projects/romance-languages/">
+  <meta property="og:image" content="http://www.alotropico.com/projects/romance-languages/data/preview.png">
+  <meta property="og:image:alt" content="languages visualization">
+  <meta property="og:description" content="D3.js force layout with human languages data">
+
+  <!-- Twitter Card data -->
+  <meta name="twitter:card" content="Interactive visualization of human languages">
+  <meta name="twitter:creator" content="@alotropico">
+</head>
+
+<body>
+
+  <header></header>
+
+  <div class="window">
+
+    <!-- IMPORTER -->
+    <div class="importer">
+
+      <div class="file box">
+        <h3>Source file or url</h3>
+        <div class="form">
+          <input id="source" type="text" value="/data/langs-mini.json">
+          <button id="load">Load</button>
+        </div>
+      </div>
+
+      <div class="controls box">
+        <h3>Import from Wikipedia and Wikidata</h3>
+        <button id="start">Start</button>
+      </div>
+      <div id="monitor" class="monitor box fill last"></div>
+      <div class="status">
+        ...
+      </div>
+    </div>
+
+    <!-- EDITOR -->
+    <div class="editor">
+      <div class="canvas fill">
+        <textarea id="editor" placeholder=""></textarea>
+      </div>
+    </div>
+
+    <!-- EXPORTER -->
+    <div class="exporter">
+      <div class="options box fill last"></div>
+      <div class="actions">
+        <button>Save</button>
+      </div>
+    </div>
+
+  </div>
+
+</body>
+</html>
