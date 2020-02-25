@@ -31,7 +31,7 @@
       <div class="file box">
         <h3>Source file or url</h3>
         <div class="form">
-          <input id="source" type="text" value="/data/langs-mini.json">
+          <input id="source" type="text" value="/data/langs-test.json">
           <button id="load">Load</button>
         </div>
       </div>
@@ -41,23 +41,35 @@
         <button id="start">Start</button>
       </div>
       <div id="monitor" class="monitor box fill last"></div>
-      <div class="status">
-        ...
+      <div id="status" class="status">
+        &nbsp;
       </div>
     </div>
 
     <!-- EDITOR -->
     <div class="editor">
-      <div class="canvas fill">
-        <textarea id="editor" placeholder=""></textarea>
+
+      <div class="box fill">
+        <h3>Current item</h3>
+        <div class="canvas fill">
+          <textarea id="editor" placeholder=""></textarea>
+        </div>
       </div>
+
+      <div class="box fill">
+        <h3>Wikidata ids pending of labels</h3>
+        <div class="canvas fill">
+          <textarea id="imports" placeholder=""></textarea>
+        </div>
+      </div>
+
     </div>
 
     <!-- EXPORTER -->
     <div class="exporter">
       <div class="options box fill last"></div>
       <div class="actions">
-        <button>Save</button>
+        <button id="save">Save</button>
       </div>
     </div>
 

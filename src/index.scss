@@ -118,6 +118,7 @@ header{
 	.status{
 		padding: $m;
 		border-top: $border;
+		font-size: 13px;
 	}
 }
 .editor{
@@ -128,7 +129,6 @@ header{
 	border-right: $border;
 
 	.canvas{
-		margin: $m;
 		position: relative;
 
 		textarea{
@@ -136,6 +136,10 @@ header{
 			width: 100%;
 			height: 100%;
 		}
+	}
+
+	.actions{
+		margin: $m 0 0;
 	}
 }
 .exporter{
@@ -150,6 +154,9 @@ header{
 }
 
 .box{
+	display: flex;
+	flex-direction: column;
+
 	margin: $m $m 0;
 	padding: $m;
 	border: $border;

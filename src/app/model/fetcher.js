@@ -1,9 +1,9 @@
 import $ from "jquery";
-import { print } from '../modules/messages';
+import { print } from '../view/messages';
 
-const search_by_id = false,
+const search_by_id = true,
 	wikipediaURL = 'https://en.wikipedia.org/w/api.php?action=query&prop=pageprops&format=json&redirects&titles=',
-	wikidataURL = 'https://www.wikidata.org/w/api.php?action=wbgetentities&props=labels%7Cdescriptions%7Cclaims&languages=en&format=json&ids=';
+	wikidataURL = 'https://www.wikidata.org/w/api.php?action=wbgetentities&props=labels%7Cdescriptions%7Cclaims&languages=en%7Ces&format=json&ids=';
 
 let lastSearchByName = '',
 	parser = {},
@@ -13,7 +13,7 @@ function search(datum){
 	if(search_by_id && datum.hasOwnProperty('wikidata') && datum['wikidata'])
 		searchById(datum.wikidata);
 	else if(datum.hasOwnProperty('name') && datum['name'])
-		searchByName(datum.name);
+		searchByName(encodeURIComponent(datum.name));
 }
 
 function searchById(id){
@@ -45,6 +45,8 @@ function searchByName(name){
 
 				print('Unexpected format. See catched error in the console.', 'error');
 
+				callback({});
+
 			}else if(datum.hasOwnProperty('disambiguation')){
 
 				print('Disambiguation page. Trying again...', 'warn');
@@ -69,6 +71,8 @@ function reSearchByName(){
 
 	if(name.indexOf('_language') == -1){
 		searchByName(name + '_language');
+	} else {
+		callback({});
 	}
 }
 
@@ -78,7 +82,6 @@ function fetchItem(id){
 
 	$.getJSON( wikidataURL + id + '&origin=*' )
 		.done(function( json ) {
-
 			
 			if(json.hasOwnProperty('success')) {
 				print('Item found on Wikidata', 'ok');
@@ -95,6 +98,8 @@ function fetchItem(id){
 
 			} else if(json.hasOwnProperty('error')){
 				print('Wikidata error: ' + JSON.stringify(json.error), 'error');
+			} else if(json.hasOwnProperty('missing')){
+				print('Wikidata missing: ' + JSON.stringify(json.missing), 'error');
 			} else{
 				print('Fetch from Wikidata failed. See further data in the console.', 'error');
 				console.log(json);
