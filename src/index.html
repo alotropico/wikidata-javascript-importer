@@ -32,15 +32,17 @@
         <h3>Source file or url</h3>
         <div class="form">
           <input id="source" type="text" value="/data/langs-test.json">
-          <button id="load">Load</button>
+          <button id="load" class="load">Load</button>
         </div>
       </div>
 
       <div class="controls box">
         <h3>Import from Wikipedia and Wikidata</h3>
-        <button id="start">Start</button>
+        <div class="actions">
+          <button id="start" class="start float-right">Start</button>
+        </div>
       </div>
-      <div id="monitor" class="monitor box fill last"></div>
+      <div id="monitor" class="monitor box fill"></div>
       <div id="status" class="status">
         &nbsp;
       </div>
@@ -57,9 +59,12 @@
       </div>
 
       <div class="box fill">
-        <h3>Wikidata ids pending of labels</h3>
+        <h3>...</h3>
         <div class="canvas fill">
-          <textarea id="imports" placeholder=""></textarea>
+          <textarea id="" placeholder=""></textarea>
+        </div>
+        <div class="actions">
+          <button id="save" class="save float-right">Save</button>
         </div>
       </div>
 
@@ -67,10 +72,24 @@
 
     <!-- EXPORTER -->
     <div class="exporter">
-      <div class="options box fill last"></div>
-      <div class="actions">
-        <button id="save">Save</button>
+
+      <div class="box fill">
+        <h3>Wikidata ids pending of labels</h3>
+        <div class="canvas fill">
+          <textarea id="imports" placeholder=""></textarea>
+        </div>
       </div>
+
+      <div class="box fill">
+        <h3>...</h3>
+        <div class="canvas fill">
+          <textarea id="" placeholder=""></textarea>
+        </div>
+        <div class="actions">
+          <button id="process" class="process float-right">Process</button>
+        </div>
+      </div>
+      
     </div>
 
   </div>

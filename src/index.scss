@@ -4,6 +4,7 @@ $m: .5rem;
 $light: #d9d9d9;
 $grey: #666;
 $border: 1px solid $grey;
+$dark: $grey;
 
 *{
   box-sizing: border-box;
@@ -14,11 +15,11 @@ body{
 	padding: 0;
 	font-size: 16px;
 	font-family: sans-serif;
-	color: #222;
+	color: $dark;
 }
 
 a{
-	color: #222;
+	color: $dark;
 }
 
 /**/
@@ -44,6 +45,24 @@ textarea, pre {
 button{
 	padding: $m $m*2;
 	border-radius: $m/2;
+	background: white;
+	cursor: pointer;
+
+	&.start{
+		background: #c0d696;
+	}
+	&.pause{
+		background: orange;
+	}
+	&.load{
+		background: #a0b7e2;
+	}
+	&.save{
+		background: #a0b7e2;
+	}
+	&.process{
+		background: #a0b7e2;
+	}
 }
 
 /**/
@@ -92,6 +111,7 @@ header{
 		background: white;
 		overflow: hidden;
 		overflow-y: auto;
+		border-top: $border;
 
 		.msg{
 			font-size: 13px;
@@ -100,6 +120,7 @@ header{
 
 			&.ok{
 				color: #73b904;
+				font-weight: bold;
 			}
 			&.error{
 				color: red;
@@ -128,7 +149,31 @@ header{
 	border-left: $border;
 	border-right: $border;
 
-	.canvas{
+	
+
+	
+}
+
+.canvas{
+	position: relative;
+
+	textarea{
+		position: absolute;
+		width: 100%;
+		height: 100%;
+	}
+}
+
+.actions{
+	margin: $m 0 0;
+}
+.exporter{
+	left: 75%;
+	width: 25%;
+	height: 100%;
+
+	/* .canvas{
+
 		position: relative;
 
 		textarea{
@@ -139,32 +184,21 @@ header{
 	}
 
 	.actions{
-		margin: $m 0 0;
-	}
-}
-.exporter{
-	left: 75%;
-	width: 25%;
-	height: 100%;
-
-	.actions{
 		padding: $m;
 		border-top: $border;
-	}
+	} */
 }
 
 .box{
 	display: flex;
 	flex-direction: column;
-
-	margin: $m $m 0;
+	//margin: $m $m 0;
 	padding: $m;
-	border: $border;
-
-	&.last{
-		margin-bottom: $m;
-	}
+	//border: $border;
 }
 .fill{
 	flex-grow: 1;
+}
+.float-right{
+	float: right;
 }
