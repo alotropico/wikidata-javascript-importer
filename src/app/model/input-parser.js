@@ -1,6 +1,6 @@
 import $ from "jquery";
 
-let properties = ["name", "nombre", /*"speakers", */"wikidata", "lat", "lon"/*, "wals" ,"iso-639-3", "genus", "family", "area"*/];
+let properties = ["name", "nombre", /*"speakers", */"wikidata", "lat", "lon",/*"wals" ,"iso-639-3", "genus", "family", "area"*/ "is", "parents", "typology", "writing"];
 
 function extractCountries(d){
 	let ar = [];
@@ -41,7 +41,7 @@ export function inputParser(data) {
 			datum.speakers = getNumber(v.speakers);
 
 		let countries = extractCountries(v);
-		if(countries.length)
+		if(countries.length && countries[0])
 			datum.countries = countries;
 
 		ar[k] = datum;

@@ -98,7 +98,7 @@ function loadNextItem(){
 
 		print('', 'hr');
 
-		print('All done - ' + getTime(), 'ok');
+		print('All done - ' + getTime(), '');
 
 		$('#start').trigger('click');
 	}
@@ -128,11 +128,74 @@ function fetcherResponse(data){
 
 	if(hasInstanceOf(data, validInstancesTypes) && data.hasOwnProperty('parents'))
 		insertItems(data.parents);
-	else
-		console.log(data);
 
 	if(playing)
 		loadNextItem();
+}
+
+function loadNextOrphan(){
+
+	let id = pendingIds.shift();
+
+	if(id){
+
+		$('#imports').val(pendingIds.join(', '));
+
+	// if(pointer < inputItems.length){
+
+		print('', 'hr');
+
+		print('Loading item: ' + id, '');
+
+		fetcher({wikidata: id}, parser, orphanResponse);
+
+	} else if(pendingIds.length){
+		loadNextOrphan();
+	} else {
+		print('', 'hr');
+
+		print('All done - ' + getTime(), '');
+
+		$('#process').trigger('click');
+	}
+
+	// 	let label = '';
+
+	// 	try{
+	// 		label = (inputItems[pointer].wikidata ? inputItems[pointer].wikidata : inputItems[pointer].name);
+	// 	}
+	// 	catch(e){
+	// 		label = 'UNDEFINED';
+	// 		console.log(inputItems[pointer]);
+	// 		console.log(e);
+	// 	}
+
+	// 	print('Loading item: ' + label, '');
+
+	// 	//showData(inputItems[pointer]);
+
+	// 	fetcher(inputItems[pointer], parser, fetcherResponse);
+
+	// } else {
+
+	// 	pointer = inputItems.length;
+
+	// 	print('', 'hr');
+
+	// 	print('All done - ' + getTime(), 'ok');
+
+	// 	$('#start').trigger('click');
+	// }
+
+	// showItemsCount();
+
+}
+
+function orphanResponse(data){
+	console.log(data);
+
+	if(processing)
+		loadNextOrphan();
 }
 
 function hasInstanceOf(it, ids){
@@ -165,7 +228,6 @@ function insertItems(its){
 function isInItems(id){
 	for(let i=0; i<inputItems.length; i++){
 		let it = inputItems[i];
-		//console.log(it, id);
 		if(it.hasOwnProperty('wikidata') && it.wikidata == id){
 			return true;
 		}
@@ -221,15 +283,16 @@ $('#start').on('click', function(e){
 	}
 });
 
-/*$('#process').on('click', function(e){
+$('#process').on('click', function(e){
 	if(!processing){
-		$(this).text('Process');
-		processing = true;
-	} else {
 		$(this).text('Stop process');
+		processing = true;
+		loadNextOrphan();
+	} else {
+		$(this).text('Process');
 		processing = false;
 	}
-});*/
+});
 
 $('#save').on('click', function(e){
 	exporter(exportItems);

@@ -32,17 +32,14 @@ function parsePlain(plains){
 			}
 		}
 
-		if(combinedPlains.length){
-			//console.log(combinedPlains);
-			try{
-				ret[val.label] = capitalizeFirstLetter(combinedPlains[0][val.lang].value);
-			}
-			catch(e){
-				console.log('PARSER PLAINS ERROR');
-				console.log(plains);
-				console.log(e);
-			}
-		}
+		if(combinedPlains.length && combinedPlains[0].hasOwnProperty(val.lang))
+			ret[val.label] = capitalizeFirstLetter(combinedPlains[0][val.lang].value);
+			//}
+			// catch(e){
+			// 	console.log('PARSER PLAINS ERROR');
+			// 	console.log(plains);
+			// 	console.log(e);
+			// }
 	}
 
 	return ret;
@@ -112,20 +109,21 @@ function getWikiPropsValHigh(dataSet){
 }
 
 function getWikiPropVal(dataGroup){
-	try{
+	//try{
+	if(dataGroup.hasOwnProperty('mainsnak') && dataGroup.mainsnak.hasOwnProperty('datavalue') && dataGroup.mainsnak.datavalue.hasOwnProperty('value')){
 		let valueSet = dataGroup.mainsnak.datavalue.value;
 
 		if(valueSet.hasOwnProperty('amount')){
 			return valueSet.amount;
-		} else if(valueSet.hasOwnProperty('id')){
+		}else if(valueSet.hasOwnProperty('id')){
 			return valueSet.id;
 		}
 	}
-	catch(e){
-		console.log('PARSER PROPVAL ERROR');
-		console.log(dataGroup);
-		console.log(e);
-	}
+	// catch(e){
+	// 	console.log('PARSER PROPVAL ERROR');
+	// 	console.log(dataGroup);
+	// 	console.log(e);
+	// }
 
 	return false;
 }
