@@ -8,194 +8,203 @@ import { merger } from '../model/merger';
 import { exporter } from '../model/exporter';
 import { print } from '../view/messages';
 
-let playing = false,
-	processing = false;
+/*
+Que el fetching de orphans sólo traiga lo necesario
+Que los orphans no se traigan si ya están en el json o en parents
 
-let pointer = -1,
-	inputItems = [],
-	exportItems = {},
-	pendingIds = [];
+Que los textarea no muestren el array, solo el json
 
-/*function loadWikidataIds(source){
+Empezar desde
+Idiomas opcional (o va todo para un doc)
+Idiomas y labels de idioma configurables
+Config configurable: valid instances, "is", "parent" y custom (con getHigh y getAll)
+Incluir/excluir los items indefinidos (no encontrados en Wikidata)
+
+Agregar presets
+
+Agregar otras fuentes/apis?
+*/
+
+let noWikidata = -1;
+
+let loadingChilds = false,
+	loadingOrphans = false;
+
+let child = {};
+
+let dd = {
+	childs:{
+		input: [],
+		output: {},
+		saveName: 'items.json'
+	},
+	orphans:{
+		input: [],
+		output: {},
+		saveName: 'keymap.json'
+	}
+};
+
+let ui = {
+	childs:{
+		play: $('#play'),
+		input: $('#editor'),
+		output: $('#result'),
+		load: $('#load'),
+		source: $('#source'),
+		save: $('#save'),
+		status: $('#status')
+	},
+	orphans:{
+		play: $('#process'),
+		input: $('#imports'),
+		output: $('#exports'),
+		load: $('#load-2'),
+		source: $('#source-2'),
+		save: $('#save-2'),
+		status: $('#status-2')
+	}
+};
+
+function loadJson(source, type){
 
 	print('', 'hr');
 
-	print('Loading wikidata ids labels: ' + source, '');
+	print('Loading ' + type + ': ' + source, '');
 
-	$.getJSON( source, { full: "yes" } )
-		.done(function( json ) {
-
-		})
-		.fail(function( jqxhr, textStatus, error ) {
-			print('Loading wikidata ids failed: ' + textStatus + ' ... ' + error, 'error');
-		});
-}*/
-
-function loadJson(source){
-
-	print('', 'hr');
-
-	print('Loading source: ' + source, '');
-
-	showData('');
-
-	$.getJSON( source, { full: "yes" } )
-		.done(function( json ) {
-
-			let ar = {};
-
-			print('Loaded', 'ok');
-
-			json = inputParser(json);
-
-			inputItems = [];
-
-			$.each(json, function( k, v ) {
-				inputItems.push(v);
-			});
-
-			showItemsCount();
-
-			if(playing)
-				loadNextItem();
-			else
-				showData(json);
-
-		})
-		.fail(function( jqxhr, textStatus, error ) {
-			print('Loading source json failed: ' + textStatus + ' ... ' + error, 'error');
-		});
+	$.ajax({
+        type: 'GET',
+        url: source,
+        dataType: 'json',
+        callback: type,
+        success: function(response) {
+			print(type + ' loaded', 'ok');
+			loadJsonResponse(response, this.callback);
+        },
+        error: function(jqxhr, textStatus, error){
+        	print('Loading source json failed: ' + textStatus + ' ... ' + error, 'error');
+        }
+    });
 }
 
-function loadNextItem(){
+function loadJsonResponse(json, type){
 
-	pointer++;
+	if(type == 'childs'){
+		json = inputParser(json);
 
-	if(pointer < inputItems.length){
+		dd[type].input = [];
+
+		$.each(json, function( k, v ) {
+			dd[type].input.push(v);
+		});
+		
+		showData(dd[type].input, ui[type].input);
+
+	} else {
+		dd[type].output = json;
+		showData(dd[type].output, ui[type].output);
+	}
+
+	showItemsCount(type);
+}
+
+function loadNextItem(type){
+
+	let id = dd[type].input.shift();
+
+	if(id){
+
+		//$('#imports').val(dd.orphans.input.join(', '));
 
 		print('', 'hr');
 
 		let label = '';
 
 		try{
-			label = (inputItems[pointer].wikidata ? inputItems[pointer].wikidata : inputItems[pointer].name);
+			label = (id.wikidata ? id.wikidata : id.name);
 		}
 		catch(e){
-			label = 'UNDEFINED';
-			console.log(inputItems[pointer]);
+			label = 'LOADING UNDEFINED';
+			console.log(dd.childs.input[pointer]);
 			console.log(e);
 		}
 
-		print('Loading item: ' + label, '');
+		print('Loading ' + type + ': ' + label, '');
 
-		//showData(inputItems[pointer]);
-
-		fetcher(inputItems[pointer], parser, fetcherResponse);
+		if(type == 'childs'){
+			fetcher(id, parser, fetcherResponse);
+		} else {
+			fetcher({wikidata: id}, parser, orphanResponse);
+		}
 
 	} else {
 
-		pointer = inputItems.length;
-
 		print('', 'hr');
 
-		print('All done - ' + getTime(), '');
+		print('All ' + type + ' done - ' + getTime(), '');
 
-		$('#start').trigger('click');
+		ui[type].play.trigger('click');
 	}
 
-	showItemsCount();
+	showItemsCount(type);
 }
 
 function fetcherResponse(data){
 
-	showData(data);
-
-	pendingIds = arConcatUnique(pendingIds, extractor(data, '(Q|P)\\d+'));
-
-	let newItem = merger(inputItems[pointer], data);
+	let newItem = merger(child, data);
 
 	let itemKey;
-
 	if(newItem.hasOwnProperty('wikidata') && newItem.wikidata){
 		itemKey = newItem.wikidata;
 	} else {
-		itemKey = 'NO-WIKI-DATA-' + pointer;
+		noWikidata++;
+		itemKey = 'NO-WIKI-DATA-' + noWikidata;
 	}
 
-	exportItems[itemKey] = newItem;
+	dd.childs.output[itemKey] = newItem;
 
-	$('#imports').val(pendingIds.join(', '));
+	if(hasInstanceOf(data, validInstancesTypes) && data.hasOwnProperty('parents')){
+		insertItems(data.parents, 'childs');
+		showData(dd.childs.input, $('#editor'));
+	}
 
-	if(hasInstanceOf(data, validInstancesTypes) && data.hasOwnProperty('parents'))
-		insertItems(data.parents);
+	showData(dd.childs.output, $('#result'));
 
-	if(playing)
-		loadNextItem();
+	showItemsCount('childs');
+	showItemsCount('orphans');
+
+	// ** get new orphans
+	dd.orphans.input = arConcatUnique(exclude(dd.orphans.input, data.parents), extractor(data, '(Q|P)\\d+'));
+	showData(dd.orphans.input.join(', '), $('#imports'), false);
+	// **
+
+	if(loadingChilds)
+		loadNextItem('childs');
 }
 
-function loadNextOrphan(){
+/******************************************************************/
+/******************************************************************/
+/******************************************************************/
 
-	let id = pendingIds.shift();
-
-	if(id){
-
-		$('#imports').val(pendingIds.join(', '));
-
-	// if(pointer < inputItems.length){
-
-		print('', 'hr');
-
-		print('Loading item: ' + id, '');
-
-		fetcher({wikidata: id}, parser, orphanResponse);
-
-	} else if(pendingIds.length){
-		loadNextOrphan();
-	} else {
-		print('', 'hr');
-
-		print('All done - ' + getTime(), '');
-
-		$('#process').trigger('click');
-	}
-
-	// 	let label = '';
-
-	// 	try{
-	// 		label = (inputItems[pointer].wikidata ? inputItems[pointer].wikidata : inputItems[pointer].name);
-	// 	}
-	// 	catch(e){
-	// 		label = 'UNDEFINED';
-	// 		console.log(inputItems[pointer]);
-	// 		console.log(e);
-	// 	}
-
-	// 	print('Loading item: ' + label, '');
-
-	// 	//showData(inputItems[pointer]);
-
-	// 	fetcher(inputItems[pointer], parser, fetcherResponse);
-
-	// } else {
-
-	// 	pointer = inputItems.length;
-
-	// 	print('', 'hr');
-
-	// 	print('All done - ' + getTime(), 'ok');
-
-	// 	$('#start').trigger('click');
-	// }
-
-	// showItemsCount();
-
+function exclude(ar1, ar2){
+	console.log(ar1, ar2);
+	return ar1;
 }
 
 function orphanResponse(data){
-	console.log(data);
 
-	if(processing)
-		loadNextOrphan();
+	dd.orphans.output[data.wikidata] = {
+		name: data.name,
+		nombre: data.nombre
+	};
+
+	//showData(dd[type].output, ui[type].output);
+	showData(dd.orphans.output, $('#exports'));
+
+	showItemsCount('orphans');
+
+	if(loadingOrphans)
+		loadNextItem('orphans');
 }
 
 function hasInstanceOf(it, ids){
@@ -211,23 +220,19 @@ function hasInstanceOf(it, ids){
 	}
 }
 
-function insertItems(its){
-	// ASEGURARSE DE QUE NO EXISTAN YA
-
+function insertItems(its, type){
 	for(let i=0; i<its.length; i++){
-		if(!isInItems(its[i])){
-			inputItems.push({
+		if(!isInItems(its[i], type)){
+			dd[type].input.push({
 				wikidata: its[i]
 			});
 		}
 	}
-
-	showItemsCount();
 }
 
-function isInItems(id){
-	for(let i=0; i<inputItems.length; i++){
-		let it = inputItems[i];
+function isInItems(id, type){
+	for(let i = 0; i < dd[type].input.length; i++){
+		let it = dd[type].input[i];
 		if(it.hasOwnProperty('wikidata') && it.wikidata == id){
 			return true;
 		}
@@ -235,8 +240,30 @@ function isInItems(id){
 	return false;
 }
 
-function showItemsCount(){
-	$('#status').text(pointer + ' of ' + inputItems.length + ' items searched');
+function showItemsCount(type){
+	let text = 'Loaded: ' + Object.keys(dd[type].output).length + ' - Remaining: ' + dd[type].input.length;
+	$(ui[type].status).text(text);
+}
+
+// MONITOR MESSAGES
+
+function showData(data, container, formatted = true){
+
+	if(data == '')
+		container.val('');
+	else if(!formatted)
+		container.val( data );
+	else
+		container.val( JSON.stringify(data, null, '\t') );
+
+	//container.stop().animate({ scrollTop: container.prop("scrollHeight")}, 200);
+}
+
+// TOOLKIT
+
+function getTime(){
+	var newDate = new Date();
+	return newDate.toLocaleString();
 }
 
 function arConcatUnique(ar1, ar2){
@@ -250,56 +277,50 @@ function arConcatUnique(ar1, ar2){
 	return unique;
 }
 
-// MONITOR MESSAGES
+// SETUP UI
 
-function showData(data){
-	if(data == '')
-		$('#editor').val('');
-	else
-		$('#editor').val( JSON.stringify(data, null, '\t') );
-}
+$.each(ui, function( index, dom ) {
+	dom.load.on('click', function(e){
+		loadJson( dom.source.val(), index );
+	});
 
-// TOOLKIT
-
-function getTime(){
-	var newDate = new Date();
-	return newDate.toLocaleString();
-}
-
-// INIT
-
-$('#load').on('click', function(e){
-	loadJson( $('#source').val() );
+	dom.save.on('click', function(e){
+		exporter(dd[index].output, dd[index].saveName);
+	});
 });
 
 $('#start').on('click', function(e){
-	if(!playing){
+	if(!loadingChilds){
+		if(loadingOrphans)
+			$('#process').trigger('click');
+
 		$(this).text('Pause');
-		playing = true;
-		loadNextItem();
+		loadingChilds = true;
+		loadNextItem('childs');
 	} else {
 		$(this).text('Play');
-		playing = false;
+		loadingChilds = false;
 	}
 });
 
 $('#process').on('click', function(e){
-	if(!processing){
+	if(!loadingOrphans){
+		if(loadingChilds)
+			$('#start').trigger('click');
+
 		$(this).text('Stop process');
-		processing = true;
-		loadNextOrphan();
+		loadingOrphans = true;
+		loadNextItem('orphans');
 	} else {
 		$(this).text('Process');
-		processing = false;
+		loadingOrphans = false;
 	}
 });
 
-$('#save').on('click', function(e){
-	exporter(exportItems);
-});
+// INIT
 
 print('READY - ' + getTime(), 'ok');
 
 $('#load').trigger('click');
 
-
+setTimeout(function(){ $('#load-2').trigger('click'); }, 500);

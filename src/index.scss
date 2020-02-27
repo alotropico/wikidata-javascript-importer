@@ -1,10 +1,10 @@
 //@import "./styles/global/svg";
 
-$m: .5rem;
+$m: .8rem;
 $light: #d9d9d9;
 $grey: #666;
 $border: 1px solid $grey;
-$dark: $grey;
+$dark: #222;
 
 *{
   box-sizing: border-box;
@@ -20,17 +20,40 @@ body{
 
 a{
 	color: $dark;
-}
 
-/**/
+	text-decoration: underline;
+
+	&:hover{
+		text-decoration: none;
+	}
+}
 
 h1, h2, h3, h4, h5, h6{
-	font-size: 14px;
+	font-size: 13px;
 	margin: 0 0 $m;
 	padding: 0;
+	font-weight: normal;
 }
 
+label{
+	font-size: 13px;
+	margin: 0 0 $m;
+	padding: 0;
+	font-weight: bold;
+	display: block;
+	&:after{
+		content: ':';
+	}
+}
+
+hr{
+	border: none;
+	border-top: $border;
+    display: block;
+    margin: $m $m;
+}
 input, button, textarea, select{
+	font-family: sans-serif;
 	padding: $m;
 	font-size: 16px;
 	border: $border;
@@ -38,9 +61,13 @@ input, button, textarea, select{
 textarea{
 	overflow: auto;
 	resize: none;
+	font-size: 14px;
+	line-height: 1.3;
+	border: none;
+	box-shadow: 0 1px 2px rgba(0,0,0,.3);
 }
 textarea, pre {
-    tab-size : 2;
+    tab-size : 4;
 }
 button{
 	padding: $m $m*2;
@@ -49,7 +76,7 @@ button{
 	cursor: pointer;
 
 	&.start{
-		background: #c0d696;
+		background: #f1c88b;
 	}
 	&.pause{
 		background: orange;
@@ -58,10 +85,14 @@ button{
 		background: #a0b7e2;
 	}
 	&.save{
-		background: #a0b7e2;
+		background: #c0d696;
 	}
 	&.process{
-		background: #a0b7e2;
+		background: #f1c88b;
+	}
+
+	&.float-right{
+		margin-left: $m;
 	}
 }
 
@@ -88,70 +119,95 @@ header{
 	background: $light;
 }
 
+/* LAYOUT */
+
+$col1: 33%;
+$col2: 34%;
+$col3: 33%;
+
 .importer{
-	width: 25%;
+	width: $col1;
 	height: 100%;
-
-	.file{
-		.form{
-			display: flex;
-			align-items: center;
-
-			input{
-				width: 100%;
-				border-right: none;
-			}
-			button{
-				border-radius: 0 $m/2 $m/2 0;
-			}
-		}
-	}
-
-	.monitor{
-		background: white;
-		overflow: hidden;
-		overflow-y: auto;
-		border-top: $border;
-
-		.msg{
-			font-size: 13px;
-			padding: $m/2 $m/2 $m;
-			word-break: break-word;
-
-			&.ok{
-				color: #73b904;
-				font-weight: bold;
-			}
-			&.error{
-				color: red;
-			}
-			&.warn{
-				color: #d29422;
-			}
-			&.hr{
-				padding: 0;
-				border-bottom: 1px solid #d9d9d9;
-				margin: $m 0;
-			}
-		}
-	}
-
-	.status{
-		padding: $m;
-		border-top: $border;
-		font-size: 13px;
-	}
 }
 .editor{
-	left: 25%;
-	width: 50%;
+	left: $col1;
+	width: $col2;
 	height: 100%;
 	border-left: $border;
 	border-right: $border;
+}
+.exporter{
+	left: $col1 + $col2;
+	width: $col3;
+	height: 100%;
+}
 
-	
+.t-dark{
+	background: #666;
+	color: #efefef;
 
-	
+	.status{
+	}
+}
+
+/**/
+
+.file{
+	.form{
+		display: flex;
+		align-items: center;
+
+		input{
+			width: 100%;
+			border-right: none;
+			border-radius: $m/2 0 0 $m/2;
+		}
+		button{
+			border-radius: 0 $m/2 $m/2 0;
+		}
+	}
+}
+
+.monitor{
+	background: white;
+	overflow: hidden;
+	overflow-y: auto;
+	border-top: $border;
+}
+.status{
+	padding: $m;
+	border-top: $border;
+	font-size: 13px;
+}
+
+.controls{
+	.actions{
+		margin-top: 0;
+	}
+}
+
+/**/
+
+.msg{
+	font-size: 13px;
+	padding: $m/2 $m/2 $m;
+	word-break: break-word;
+
+	&.ok{
+		color: #73b904;
+		font-weight: bold;
+	}
+	&.error{
+		color: red;
+	}
+	&.warn{
+		color: #d29422;
+	}
+	&.hr{
+		padding: 0;
+		border-bottom: 1px solid #d9d9d9;
+		margin: $m 0;
+	}
 }
 
 .canvas{
@@ -163,38 +219,13 @@ header{
 		height: 100%;
 	}
 }
-
-.actions{
-	margin: $m 0 0;
-}
-.exporter{
-	left: 75%;
-	width: 25%;
-	height: 100%;
-
-	/* .canvas{
-
-		position: relative;
-
-		textarea{
-			position: absolute;
-			width: 100%;
-			height: 100%;
-		}
-	}
-
-	.actions{
-		padding: $m;
-		border-top: $border;
-	} */
-}
-
 .box{
 	display: flex;
 	flex-direction: column;
-	//margin: $m $m 0;
 	padding: $m;
-	//border: $border;
+}
+.actions{
+	margin: $m 0 0;
 }
 .fill{
 	flex-grow: 1;

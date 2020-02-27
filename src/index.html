@@ -29,65 +29,81 @@
     <div class="importer">
 
       <div class="file box">
-        <h3>Source file or url</h3>
+        <label>Source file or url</label>
         <div class="form">
           <input id="source" type="text" value="/data/langs-test.json">
           <button id="load" class="load">Load</button>
         </div>
       </div>
 
+      <hr>
+
       <div class="controls box">
-        <h3>Import from Wikipedia and Wikidata</h3>
+        <label>Import from <a href="https://www.wikidata.org/" target="_blank">Wikidata</a></label>
         <div class="actions">
-          <button id="start" class="start float-right">Start</button>
+          <button id="start" class="start">Start</button>
         </div>
       </div>
       <div id="monitor" class="monitor box fill"></div>
-      <div id="status" class="status">
-        &nbsp;
-      </div>
     </div>
 
     <!-- EDITOR -->
     <div class="editor">
 
       <div class="box fill">
-        <h3>Current item</h3>
+        <label>Queue</label>
         <div class="canvas fill">
           <textarea id="editor" placeholder=""></textarea>
         </div>
       </div>
 
       <div class="box fill">
-        <h3>...</h3>
+        <label>Result</label>
         <div class="canvas fill">
-          <textarea id="" placeholder=""></textarea>
+          <textarea id="result" placeholder=""></textarea>
         </div>
         <div class="actions">
           <button id="save" class="save float-right">Save</button>
         </div>
       </div>
 
+      <div id="status" class="status">
+        &nbsp;
+      </div>
+
     </div>
 
     <!-- EXPORTER -->
-    <div class="exporter">
+    <div class="exporter t-dark">
+
+      <div class="file box">
+        <label>Source file or url</label>
+        <div class="form">
+          <input id="source-2" type="text" value="/data/wikidata-ids.json">
+          <button id="load-2" class="load">Load</button>
+        </div>
+      </div>
 
       <div class="box fill">
-        <h3>Wikidata ids pending of labels</h3>
+        <label>Wikidata ids pending of labels</label>
         <div class="canvas fill">
           <textarea id="imports" placeholder=""></textarea>
         </div>
       </div>
 
       <div class="box fill">
-        <h3>...</h3>
+        <label>Result</label>
         <div class="canvas fill">
-          <textarea id="" placeholder=""></textarea>
+          <textarea id="exports" placeholder=""></textarea>
         </div>
         <div class="actions">
-          <button id="process" class="process float-right">Process</button>
+          <button id="save-2" class="save float-right">Save</button>
+          <button id="process" class="process">Process</button>
         </div>
+      </div>
+
+      <div id="status-2" class="status">
+        &nbsp;
       </div>
       
     </div>
