@@ -10,9 +10,10 @@ import { print } from '../view/messages';
 
 /*
 Que el fetching de orphans sólo traiga lo necesario
-Que los orphans no se traigan si ya están en el json o en parents
 
 Que los textarea no muestren el array, solo el json
+
+Que el input pueda ser texto o un file
 
 Empezar desde
 Idiomas opcional (o va todo para un doc)
@@ -114,24 +115,19 @@ function loadNextItem(type){
 
 	if(id){
 
-		//$('#imports').val(dd.orphans.input.join(', '));
+		let label = '';
+		if(typeof id === "string")
+			label = id;
+		else if(id.hasOwnProperty('name') && id.name)
+			label = id.name;
+		else if(id.hasOwnProperty('wikidata') && id.wikidata)
+			label = id.wikidata;
 
 		print('', 'hr');
-
-		let label = '';
-
-		try{
-			label = (id.wikidata ? id.wikidata : id.name);
-		}
-		catch(e){
-			label = 'LOADING UNDEFINED';
-			console.log(dd.childs.input[pointer]);
-			console.log(e);
-		}
-
-		print('Loading ' + type + ': ' + label, '');
+		print('Loading ' + type + ': <b>' + label, '</b>');
 
 		if(type == 'childs'){
+			child = id;
 			fetcher(id, parser, fetcherResponse);
 		} else {
 			fetcher({wikidata: id}, parser, orphanResponse);
@@ -140,7 +136,6 @@ function loadNextItem(type){
 	} else {
 
 		print('', 'hr');
-
 		print('All ' + type + ' done - ' + getTime(), '');
 
 		ui[type].play.trigger('click');
@@ -168,15 +163,14 @@ function fetcherResponse(data){
 		showData(dd.childs.input, $('#editor'));
 	}
 
-	showData(dd.childs.output, $('#result'));
+	// ** get new orphans
+	dd.orphans.input = arConcatUnique(dd.orphans.input, extractor(data, '(Q|P)\\d+', [dd.orphans.output, dd.childs.input, dd.childs.output]));
+	showData(dd.orphans.input.join(', '), $('#imports'));
+	// **
 
+	showData(dd.childs.output, $('#result'));
 	showItemsCount('childs');
 	showItemsCount('orphans');
-
-	// ** get new orphans
-	dd.orphans.input = arConcatUnique(exclude(dd.orphans.input, data.parents), extractor(data, '(Q|P)\\d+'));
-	showData(dd.orphans.input.join(', '), $('#imports'), false);
-	// **
 
 	if(loadingChilds)
 		loadNextItem('childs');
@@ -187,7 +181,7 @@ function fetcherResponse(data){
 /******************************************************************/
 
 function exclude(ar1, ar2){
-	console.log(ar1, ar2);
+	//console.log(ar1, ar2);
 	return ar1;
 }
 
@@ -198,9 +192,9 @@ function orphanResponse(data){
 		nombre: data.nombre
 	};
 
-	//showData(dd[type].output, ui[type].output);
-	showData(dd.orphans.output, $('#exports'));
+	showData(dd.orphans.input.join(', '), $('#imports'));
 
+	showData(dd.orphans.output, $('#exports'));
 	showItemsCount('orphans');
 
 	if(loadingOrphans)
@@ -247,11 +241,11 @@ function showItemsCount(type){
 
 // MONITOR MESSAGES
 
-function showData(data, container, formatted = true){
+function showData(data, container){
 
 	if(data == '')
 		container.val('');
-	else if(!formatted)
+	else if(typeof data === 'string')
 		container.val( data );
 	else
 		container.val( JSON.stringify(data, null, '\t') );

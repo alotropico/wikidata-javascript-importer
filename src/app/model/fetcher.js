@@ -36,14 +36,15 @@ function searchByName(name){
 			try{
 				datum = getProperty(json.query.pages, 0)['pageprops'];
 			}
-
 			catch(e){
 				console.log(e);
 			}
 
 			if(!datum){
 
-				print('Unexpected format. See catched error in the console.', 'error');
+				print('Unexpected format in the response. See object and catched error in the console.', 'error');
+
+				console.log(json);
 
 				callback({});
 

@@ -1,6 +1,7 @@
 //@import "./styles/global/svg";
 
 $m: .8rem;
+$n: .5rem;
 $light: #d9d9d9;
 $grey: #666;
 $border: 1px solid $grey;
@@ -37,7 +38,7 @@ h1, h2, h3, h4, h5, h6{
 
 label{
 	font-size: 13px;
-	margin: 0 0 $m;
+	margin: 0 0 $n;
 	padding: 0;
 	font-weight: bold;
 	display: block;
@@ -50,7 +51,7 @@ hr{
 	border: none;
 	border-top: $border;
     display: block;
-    margin: $m $m;
+    margin: $n $m;
 }
 input, button, textarea, select{
 	font-family: sans-serif;
@@ -105,14 +106,14 @@ header, .window, .importer, .editor, .exporter{
 }
 
 header{
-	height: $m*3;
+	height: 60px;
 	width: 100%;
 	background: $light;
 	border-bottom: $border;
 }
 
 .window{
-	top: $m*3;
+	top: 60px;
 	bottom: 0;
 	left: 0;
 	right: 0;
@@ -121,9 +122,9 @@ header{
 
 /* LAYOUT */
 
-$col1: 33%;
-$col2: 34%;
-$col3: 33%;
+$col1: 30%;
+$col2: 40%;
+$col3: 30%;
 
 .importer{
 	width: $col1;
@@ -175,7 +176,8 @@ $col3: 33%;
 	border-top: $border;
 }
 .status{
-	padding: $m;
+	padding: $m 0;
+	margin: 0 $m;
 	border-top: $border;
 	font-size: 13px;
 }
@@ -190,7 +192,7 @@ $col3: 33%;
 
 .msg{
 	font-size: 13px;
-	padding: $m/2 $m/2 $m;
+	padding: $n/2 $n/2 $n;
 	word-break: break-word;
 
 	&.ok{
@@ -206,7 +208,7 @@ $col3: 33%;
 	&.hr{
 		padding: 0;
 		border-bottom: 1px solid #d9d9d9;
-		margin: $m 0;
+		margin: $n 0;
 	}
 }
 
